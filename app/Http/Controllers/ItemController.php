@@ -15,8 +15,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $item = Item::orderBy('created_at','DESC')->get();
-        return $item;
+        return Item::orderBy('created_at','DESC')->get();
     }
 
     /**
@@ -76,9 +75,11 @@ class ItemController extends Controller
     public function update(Request $request, $id)
     {
         $existingItem = Item::find($id);
-        if (empty(existingItem)) return "Item not found";
-        $existingItem->delete();
-        return "Item successfully deleted.";
+        if (empty($existingItem)) return "Item not found";
+        $existingItem->completed = $request->item['completed'] ? true : false;
+        $existingItem->completed_at = $request->item['completed'] ? Carbon::now() : null;
+        $existingItem->save();
+        return $existingItem;   
     }
 
     /**
@@ -90,10 +91,8 @@ class ItemController extends Controller
     public function destroy($id)
     {
         $existingItem = Item::find($id);
-        if (empty(existingItem)) return "Item not found";
-        $existingItem->completed = $request->item['completed'] ? true : false;
-        $existingItem->completed_at = $request->item['completed'] ? Carbon::now() : null;
-        $existingItem->save();
-        return $existingItem;
+        if (empty($existingItem)) return "Item not found";
+        $existingItem->delete();
+        return "Item successfully deleted.";
     }
 }
